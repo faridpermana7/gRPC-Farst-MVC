@@ -1,0 +1,198 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList;
+@using X.PagedList.Web.Common
+@*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+
+<h3>List Employee</h3>
+<hr />
+
+<form asp-action="Index" method="get">
+
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-md-8">
+            <a asp-action="Create" class="btn btn-primary" type="button"><i class="fas fa-plus-circle"></i> Add New</a>
+        </div>
+        @*<div class="col-md-4">
+                @Html.DropDownList("pageSize")
+            </div>*@
+        <div class="col-md-4" style="display:inline-flex;">
+            @Html.TextBox("keyword", ViewBag.CurrentFilter as string, new { @class = "form-control   ", @style = "float: right; border-top-right-radius: 0px!important; border-bottom-right-radius: 0px!important" })
+
+            <button class="btn btn-secondary" type="submit" style="border-bottom-left-radius: 0px !important;border-top-left-radius: 0px !important;display:inherit">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <tr>
+                <th>
+                    @Html.ActionLink("NIK", "Index", new { sortOrder = "NIK", sortDir = ViewBag.CurrentSortDir })
+                </th>
+                <th>
+                    @Html.ActionLink("Name", "Index", new { sortOrder = "Name", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th>
+                    @Html.ActionLink("Occupation", "Index", new { sortOrder = "Occupation", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th>
+                    @Html.ActionLink("Address", "Index", new { sortOrder = "Address", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th class="text-center">
+                    @Html.DisplayName("Action")
+                </th>
+            </tr>
+
+            @foreach (var item in ViewBag.Employees)
+            {
+                <tr>
+                    <td>
+                        @item.NIK
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Occupation
+                    </td>
+                    <td>
+                        @item.Address
+                    </td>
+                    <td class="text-center">
+                        @*<button onclick="window.location.href = '@Url.Action("Edit","Employees", new { id = @item.NIK } )'"
+                                class="btn btn-default">
+                            <i class="fas fa-edit"></i>
+                        </button>*@
+
+                        <button onclick="detail('@item.EmployeeID')" data-toggle="modal" data-target="#myModal" class="btn btn-default">
+                            <i class="fas fa-info"></i>
+                        </button>
+
+                        @*@Ajax.ActionLink(" ", "Delete", new { id = item.NIK },
+                            new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                Confirm = "Are you sure remove " + @item.Name,
+                                OnSuccess = "onDeleteSuccess",
+                                OnFailure = "onDeleteFailure"
+                            },
+                            new { @class = "btn btn-default fas fa-trash" })*@
+                    </td>
+                </tr>
+            }
+
+        </table>
+        <br />
+        @*Halaman @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) dari @Model.PageCount*@
+
+        <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+        @Html.PagedListPager((IPagedList)ViewBag.Employees, page => Url.Action("Index", new { page }), new PagedListRenderOptionsBase
+        {
+            PageClasses = new string[] { "page-link" },
+            UlElementClasses = new string[] { "pagination" },
+            LiElementClasses = new string[] { "page-item" },
+            DisplayItemSliceAndTotal = true,
+        })
+
+    </div>
+
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Data Detail Employee</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>NIK</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label id="_nik" class="label-normal"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label id="_name" class="label-normal"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Occupation</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label id="_occupation" class="label-normal"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Address</label>
+                    </div>
+                    <div class="col-md-8">
+                        <label id="_address" class="label-normal"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#pageSize").change(function () {
+                $("#employee").submit();
+            });
+        });
+
+        function detail(empID) {
+
+            var listEmployee = JSON.parse('@Html.Raw(Json.Serialize(@ViewBag.Employees))');
+
+            var obj = listEmployee.find(s => s.employeeID == empID);
+
+            if (obj) {
+                $('#_nik').text(": " + obj.nik);
+                $('#_name').text(": " + obj.name);
+                $('#_occupation').text(": " + obj.occupation);
+                $('#_address').text(": " + obj.address);
+
+            } else {
+                alertify.error("not found");
+            }
+        }
+
+        //function onDeleteSuccess(result) {
+        //    if (result.success) {
+        //        alertify.success(result.message);
+        //        alertify.confirm('Sistem', 'Reload data?', function () {
+        //                window.location.reload();
+        //        }, function () {
+        //            //
+        //        });
+        //    }
+        //    else {
+        //        alertify.error(result.message);
+        //    }
+        //}
+        //function onDeleteFailure(result) {
+        //    alertify.error(result.message);
+        //}
+    </script>
+}
