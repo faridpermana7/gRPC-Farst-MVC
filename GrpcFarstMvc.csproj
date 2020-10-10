@@ -5,8 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.23.2" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7" />
     <PackageReference Include="X.PagedList.Web.Common" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\GrpcFarst\GrpcFarstService\Protos\employee.proto" GrpcServices="Client">
+      <Link>Protos\employee.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

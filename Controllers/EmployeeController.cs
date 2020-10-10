@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GrpcEmployee;
 using GrpcFarstMvc.Models;
+using GrpcFarstMvc.Provider;
 using GrpcFarstMvc.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,68 +35,31 @@ namespace GrpcFarstMvc.Controllers
         }
 
 
-        protected IPagedList<EmployeeDTO> GetPaged(string sortOrder, string sortDir, string currentFilter, string keyword, int? pageSize, int? page)
+        protected IPagedList<Models.EmployeeDTO> GetPaged(string sortOrder, string sortDir, string currentFilter, string keyword, int? pageSize, int? page)
         {
             // return a 404 if user browses to before the first page
             if (page.HasValue && page < 1)
                 return null;
 
-            // retrieve list from database/whereverand
-            var listUnpaged = new List<EmployeeDTO> {
-                new EmployeeDTO {
-                    EmployeeID = 1,
-                    Name = "Farid Permana",
-                    NIK = "10000000",
-                    Address ="South Jakarta City",
-                    Occupation = "Programmer"
-                },
-                new EmployeeDTO {
-                    EmployeeID = 2,
-                    Name = "Julian Noor",
-                    NIK = "10000001",
-                    Address ="South Jakarta City",
-                    Occupation = "UX Designer"
-                },
-                new EmployeeDTO {
-                    EmployeeID = 3,
-                    Name = "Julian Noor",
-                    NIK = "10000001",
-                    Address ="South Jakarta City",
-                    Occupation = "UX Designer"
-                },
-                new EmployeeDTO {
-                    EmployeeID = 4,
-                    Name = "Julian Noor",
-                    NIK = "10000001",
-                    Address ="South Jakarta City",
-                    Occupation = "UX Designer"
-                },
-                new EmployeeDTO {
-                    EmployeeID = 5,
-                    Name = "Julian Noor",
-                    NIK = "10000001",
-                    Address ="South Jakarta City",
-                    Occupation = "UX Designer"
-                },
-                new EmployeeDTO {
-                    EmployeeID = 6,
-                    Name = "Julian Noor",
-                    NIK = "10000001",
-                    Address ="South Jakarta City",
-                    Occupation = "UX Designer"
-                },
-                new EmployeeDTO {
-                    EmployeeID = 7,
-                    Name = "Julian Noor",
-                    NIK = "10000001",
-                    Address ="South Jakarta City",
-                    Occupation = "UX Designer"
-                }
-            };
+            var employeeProvider = new FarstEmployeeProvider();
+            var response = employeeProvider.GetEmployee(1).Result;
 
-            var query = listUnpaged.AsQueryable();
+            if (response.StatusCode != EmployeeResponse.Types.Status.Success)
+            {
+                throw new Exception(response.Message);
+            } 
 
+            var listUnpaged = response.Data.Select(s => new Models.EmployeeDTO()
+            {
+                EmployeeID = s.EmployeeID,
+                Name = s.Name,
+                Address = s.Address,
+                NIK = s.NIK,
+                Occupation = s.Occupation
+            }).ToList();
 
+               
+            var query = listUnpaged.AsQueryable(); 
             if (string.IsNullOrEmpty(keyword))
             {
                 keyword = currentFilter;
