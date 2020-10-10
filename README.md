@@ -3,7 +3,7 @@
 
 This is a web application MVC .NET Core which uses gRHCP as the service.
 
-## TO DO: 
+## Configuration: 
  -  Add Connected Service with (gRPC)
  -  Choose file (browse with proto file on gRPC service)
  -  Make Provider to connecting controller with service
