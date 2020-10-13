@@ -71,3 +71,53 @@ body {
 .modal-header {
   display: block !important;
 }
+
+li.pagination-page label {
+    justify-content: left;
+    position: relative;
+}
+
+.pagination-page label {
+    width: auto;
+    background: #007bff;
+    float: right;
+    border-radius: 20px;
+}
+ 
+.pagination-page label::before {
+    content: "Show";
+    color: #fff;
+    width: 64px;
+    height: 29px;   
+    line-height: 29px;
+    display: block;
+    position: absolute;
+    text-align: center;
+}
+.pagination-page select {
+    margin: 0;
+    padding: 5px 0px 5px 10px;
+    float: left;
+    color: #fff !important;
+    background-color: #007bff !important;
+    background-image: none;
+    border: 0;
+    text-transform: uppercase;
+    border: none;
+    -o-transition: all .4s;
+    transition: all .4s;
+    margin-left: 50px;
+    margin-right: 10px;
+    border-radius: 0 20px 20px 0;
+}
+ 
+/*.pagination-page > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.428571429;
+    text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+}*/

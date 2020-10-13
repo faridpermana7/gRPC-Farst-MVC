@@ -10,15 +10,12 @@
 <h3>List Employee</h3>
 <hr />
 
-<form asp-action="Index" method="get">
+<form asp-action="Index" method="get" id="employee">
 
     <div class="row" style="margin-bottom: 10px">
         <div class="col-md-8">
             <a asp-action="Create" class="btn btn-primary" type="button"><i class="fas fa-plus-circle"></i> Add New</a>
         </div>
-        @*<div class="col-md-4">
-                @Html.DropDownList("pageSize")
-            </div>*@
         <div class="col-md-4" style="display:inline-flex;">
             @Html.TextBox("keyword", ViewBag.CurrentFilter as string, new { @class = "form-control   ", @style = "float: right; border-top-right-radius: 0px!important; border-bottom-right-radius: 0px!important" })
 
@@ -27,83 +24,89 @@
             </button>
         </div>
     </div>
-</form>
 
-<div class="row">
-    <div class="col-md-12">
-        <table class="table table-striped">
-            <tr>
-                <th>
-                    @Html.ActionLink("NIK", "Index", new { sortOrder = "NIK", sortDir = ViewBag.CurrentSortDir })
-                </th>
-                <th>
-                    @Html.ActionLink("Name", "Index", new { sortOrder = "Name", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
-                </th>
-                <th>
-                    @Html.ActionLink("Occupation", "Index", new { sortOrder = "Occupation", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
-                </th>
-                <th>
-                    @Html.ActionLink("Address", "Index", new { sortOrder = "Address", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
-                </th>
-                <th class="text-center">
-                    @Html.DisplayName("Action")
-                </th>
-            </tr>
-
-            @foreach (var item in ViewBag.Employees)
-            {
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
                 <tr>
-                    <td>
-                        @item.NIK
-                    </td>
-                    <td>
-                        @item.Name
-                    </td>
-                    <td>
-                        @item.Occupation
-                    </td>
-                    <td>
-                        @item.Address
-                    </td>
-                    <td class="text-center">
-                        @*<button onclick="window.location.href = '@Url.Action("Edit","Employees", new { id = @item.NIK } )'"
-                                class="btn btn-default">
-                            <i class="fas fa-edit"></i>
-                        </button>*@
-
-                        <button onclick="detail('@item.EmployeeID')" data-toggle="modal" data-target="#myModal" class="btn btn-default">
-                            <i class="fas fa-info"></i>
-                        </button>
-
-                        @*@Ajax.ActionLink(" ", "Delete", new { id = item.NIK },
-                            new AjaxOptions
-                            {
-                                HttpMethod = "POST",
-                                Confirm = "Are you sure remove " + @item.Name,
-                                OnSuccess = "onDeleteSuccess",
-                                OnFailure = "onDeleteFailure"
-                            },
-                            new { @class = "btn btn-default fas fa-trash" })*@
-                    </td>
+                    <th>
+                        @Html.ActionLink("NIK", "Index", new { sortOrder = "NIK", sortDir = ViewBag.CurrentSortDir })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Name", "Index", new { sortOrder = "Name", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Occupation", "Index", new { sortOrder = "Occupation", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Address", "Index", new { sortOrder = "Address", sortDir = ViewBag.CurrentSortDir, currentFilter = ViewBag.CurrentFilter })
+                    </th>
+                    <th class="text-center">
+                        @Html.DisplayName("Action")
+                    </th>
                 </tr>
-            }
 
-        </table>
-        <br />
-        @*Halaman @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) dari @Model.PageCount*@
+                @foreach (var item in ViewBag.Employees)
+                {
+                    <tr>
+                        <td>
+                            @item.NIK
+                        </td>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.Occupation
+                        </td>
+                        <td>
+                            @item.Address
+                        </td>
+                        <td class="text-center">
+                            @*<button onclick="window.location.href = '@Url.Action("Edit","Employees", new { id = @item.NIK } )'"
+                                        class="btn btn-default">
+                                    <i class="fas fa-edit"></i>
+                                </button>*@
 
-        <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
-        @Html.PagedListPager((IPagedList)ViewBag.Employees, page => Url.Action("Index", new { page }), new PagedListRenderOptionsBase
-        {
-            PageClasses = new string[] { "page-link" },
-            UlElementClasses = new string[] { "pagination" },
-            LiElementClasses = new string[] { "page-item" },
-            DisplayItemSliceAndTotal = true,
-        })
+                            <button onclick="detail('@item.EmployeeID')" data-toggle="modal" data-target="#myModal" class="btn btn-default">
+                                <i class="fas fa-info"></i>
+                            </button>
+
+                            @*@Ajax.ActionLink(" ", "Delete", new { id = item.NIK },
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    Confirm = "Are you sure remove " + @item.Name,
+                                    OnSuccess = "onDeleteSuccess",
+                                    OnFailure = "onDeleteFailure"
+                                },
+                                new { @class = "btn btn-default fas fa-trash" })*@
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            <br />
+            @*Halaman @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) dari @Model.PageCount*@
+
+            <div class="pagination-page">
+                <label>
+                    @Html.DropDownList("pageSize")
+                </label>
+            </div>
+            <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+            @Html.PagedListPager((IPagedList)ViewBag.Employees, page => Url.Action("Index", new { page }), new X.PagedList.Mvc.Core.Common.PagedListRenderOptions
+       {
+           PageClasses = new string[] { "page-link" },
+           UlElementClasses = new string[] { "pagination" },
+           LiElementClasses = new string[] { "page-item" },
+           DisplayItemSliceAndTotal = true,  
+       })
+
+        </div>
 
     </div>
 
-</div>
+</form>
 
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -155,9 +158,41 @@
 
 @section Scripts {
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            console.log("ready!");
+
+            @*var item = "<li class='page-item pagination-page'>" +
+                "<label id='pagination_pagesize'>" +
+                "<select id='pageSize' name='pageSize'></select>" +
+                "</label></li>";
+            $('.pagination').append(item);
+
+
+            var listpageSize = JSON.parse('@Html.Raw(Json.Serialize(@ViewBag.PageSize))');
+
+            $.each(listpageSize, function (key, obj) {
+                $('#pageSize')
+                    .append($("<option></option>")
+                        .attr("value", obj.value)
+                        .text(obj.text));
+            });*@
+        });
+
+
         $(function () {
             $("#pageSize").change(function () {
                 $("#employee").submit();
+                //var _pageSize = $(this).find(":selected").val();   
+                //var url = '/Employee';
+                //$.ajax({
+                //    type: "GET",
+                //    url: url,
+                //    data: { pageSize: _pageSize },
+                //    dataType: "html",
+                //    success: function (data) { },
+                //    error: function () { alert('something bad happened'); }
+                // }); 
             });
         });
 

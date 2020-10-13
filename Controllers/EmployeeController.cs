@@ -19,7 +19,7 @@ namespace GrpcFarstMvc.Controllers
         {
 
         }
-        //private List<SelectListItem> PageSizeList = new Pagination().PageSizeList;
+        private List<SelectListItem> PageSizeList = new Pagination().PageSizeList;
 
         // GET: EmployeeController
         public ActionResult Index(string sortOrder, string sortDir, string currentFilter, string keyword, int? pageSize, int page = 1)
@@ -30,6 +30,7 @@ namespace GrpcFarstMvc.Controllers
 
             var listPaged = GetPaged(sortOrder, sortDir, currentFilter, keyword, pageSize, page);
             ViewBag.Employees = listPaged;
+            ViewBag.PageSize = PageSizeList;
 
             return View();
         }
