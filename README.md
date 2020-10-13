@@ -4,6 +4,7 @@
 ### AUTHOR : FARID PERMANA
  
 ## Preview: 
+![alt text](https://github.com/faridpermana7/gRPCFarstMVC/blob/master/img/list_employee.PNG "SC")
 ![alt text](https://github.com/faridpermana7/gRPCFarstMVC/blob/master/img/list_employee_4.PNG "SC")
 
 ## What's new
